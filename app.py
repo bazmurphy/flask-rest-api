@@ -9,6 +9,12 @@ import os
 # Initialise our app with Flask
 app = Flask(__name__)
 
+
+@app.route("/", methods=["GET"])
+def get():
+    return jsonify({"message": "Hello World"})
+
+
 # Run the Server
 # check to see if this is the main file
 if __name__ == "__main__":
