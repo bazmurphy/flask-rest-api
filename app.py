@@ -19,7 +19,9 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqllite:///" + os.path.join(
     basedir, "db.sqlite"
 )
-# we don't need this but it will complain in the console:
+# we don't need this but it will complain in the console,
+# it is used to disable SQLAlchemy's modification tracking feature.
+# in many cases, the modification tracking feature is not necessary or may introduce some overhead that is not needed for the application.
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # Initialise the Database, by calling SQLAlchemy and pass in our app.
@@ -53,6 +55,21 @@ class Product(db.Model):
         self.price = price
         self.quantity = quantity
 
+
+# Product Schema
+# this where we use Marshmallow
+class ProductSchema(ma.Schema):
+    # these are the fields that are allowed to show (if you didn't want to show the id)
+    class Meta:
+        fields = ("id", "name", "description", "price", "quantity")
+
+
+# Initialise the Schema
+product_schema = ProductSchema(strict=True)
+# When loading data into the ProductSchema, only the fields defined in the Meta class (("id", "name", "description", "price", "quantity")) will be considered and any other fields present in the input data will raise an error.
+
+# depending on what we are doing, we are either dealing with many products (getting a list of many), or a single product (updating or getting a single product)
+products_schema = ProductSchema(many=True, strict=True)
 
 # Run the Server
 # check to see if this is the main file
