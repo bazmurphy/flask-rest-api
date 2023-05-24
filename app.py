@@ -9,6 +9,25 @@ import os
 # Initialise our app with Flask
 app = Flask(__name__)
 
+# Setup our SQL Alchemy Base URI
+# we set the basedir as the os . path . absolute path
+# and os.path.dirname is the current folder we are in, and then the file we are in
+basedir = os.path.abspath(os.path.dirname(__file__))
+
+# Setup our Database
+# locate the folder we are currently in and then the file that we will use for the database
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqllite:///" + os.path.join(
+    basedir, "db.sqlite"
+)
+# we don't need this but it will complain in the console:
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+# Initialise the Database, by calling SQLAlchemy and pass in our app.
+db = SQLAlchemy(app)
+
+# Initialise Marshmallow
+ma = Marshmallow(app)
+
 
 @app.route("/", methods=["GET"])
 def get():
