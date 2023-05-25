@@ -75,6 +75,7 @@ products_schema = ProductSchema(many=True)
 # Create a Product (passing in the data from postman/frontend)
 @app.route("/product", methods=["POST"])
 def add_product():
+    # get all the fields from the body of the request
     name = request.json["name"]
     description = request.json["description"]
     price = request.json["price"]
@@ -89,14 +90,13 @@ def add_product():
     # use the product schema and convert the new_product in json and return it to the client
     return product_schema.jsonify(new_product)
 
-
-# example post request:
-# {
-#     "name": "Product 1",
-#     "description": "This is product one",
-#     "price": 10.00,
-#     "quantity": 1
-# }
+    # example post request body json:
+    # {
+    #     "name": "Product 1",
+    #     "description": "This is product one",
+    #     "price": 10.00,
+    #     "quantity": 1
+    # }
 
 
 @app.route("/product", methods=["GET"])
@@ -119,6 +119,30 @@ def get_product(id):
     product = Product.query.get(id)
     print(product)
     # use the product_schema (singular) and jsonify the product and return it to the client
+    return product_schema.jsonify(product)
+
+
+@app.route("/product/<id>", methods=["PUT"])
+def update_product(id):
+    # get the specific product by id from the database
+    product = Product.query.get(id)
+    print(product)
+
+    # get all the fields from the body of the request
+    name = request.json["name"]
+    description = request.json["description"]
+    price = request.json["price"]
+    quantity = request.json["quantity"]
+
+    # construct a new product to submit to the database
+    product.name = name
+    product.description = description
+    product.price = price
+    product.quantity = quantity
+
+    # we now commit the changes
+    db.session.commit()
+
     return product_schema.jsonify(product)
 
 
