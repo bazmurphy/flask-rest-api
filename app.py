@@ -71,6 +71,33 @@ product_schema = ProductSchema()
 # depending on what we are doing, we are either dealing with many products (getting a list of many), or a single product (updating or getting a single product)
 products_schema = ProductSchema(many=True)
 
+
+# Create a Product (passing in the data from postman/frontend)
+@app.route("/product", methods=["POST"])
+def add_product():
+    name = request.json["name"]
+    description = request.json["description"]
+    price = request.json["price"]
+    quantity = request.json["quantity"]
+
+    new_product = Product(name, description, price, quantity)
+
+    # add the new product to the database and commit
+    db.session.add(new_product)
+    db.session.commit()
+
+    # use the product schema and convert the new_product in json and return it to the client
+    return product_schema.jsonify(new_product)
+
+
+# example post request:
+# {
+#     "name": "Product 1",
+#     "description": "This product one",
+#     "price": 10.00,
+#     "quantity": 1
+# }
+
 # Run the Server
 # check to see if this is the main file
 if __name__ == "__main__":
