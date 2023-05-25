@@ -16,7 +16,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 # Setup our Database
 # locate the folder we are currently in and then the file that we will use for the database
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqllite:///" + os.path.join(
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(
     basedir, "db.sqlite"
 )
 # we don't need this but it will complain in the console,
@@ -24,11 +24,11 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqllite:///" + os.path.join(
 # in many cases, the modification tracking feature is not necessary or may introduce some overhead that is not needed for the application.
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-# Initialise the Database, by calling SQLAlchemy and pass in our app.
-db = SQLAlchemy(app)
-
 # Initialise Marshmallow
 ma = Marshmallow(app)
+
+# Initialise the Database, by calling SQLAlchemy and pass in our app.
+db = SQLAlchemy(app)
 
 
 @app.route("/", methods=["GET"])
@@ -45,7 +45,7 @@ class Product(db.Model):
     # we don't want 2 products to have the same name
     name = db.Column(db.String(100), unique=True)
     description = db.Column(db.String(200))
-    price = db.Colun(db.Float)
+    price = db.Column(db.Float)
     quantity = db.Column(db.Integer)
 
     # We need our Constructor, passing in "self" (similar to "this")
@@ -65,11 +65,11 @@ class ProductSchema(ma.Schema):
 
 
 # Initialise the Schema
-product_schema = ProductSchema(strict=True)
+product_schema = ProductSchema()
 # When loading data into the ProductSchema, only the fields defined in the Meta class (("id", "name", "description", "price", "quantity")) will be considered and any other fields present in the input data will raise an error.
 
 # depending on what we are doing, we are either dealing with many products (getting a list of many), or a single product (updating or getting a single product)
-products_schema = ProductSchema(many=True, strict=True)
+products_schema = ProductSchema(many=True)
 
 # Run the Server
 # check to see if this is the main file
