@@ -104,9 +104,11 @@ def get_products():
     # set this to our Class/Model which has a method on it called "query" and then get "all" (this saves us writing raw SQL)
     all_products = Product.query.all()
     print(all_products)
+
     # use the products_schema (plural) and that has a method on it called "dump" and we want to dump "all" products
     result = products_schema.dump(all_products)
     print(result)
+
     # the result is a dictionary that holds the list of products, we jsonify it and return it the client
     return jsonify(result)
 
@@ -118,6 +120,7 @@ def get_product(id):
     # we run a query on the specific product with that id
     product = Product.query.get(id)
     print(product)
+
     # use the product_schema (singular) and jsonify the product and return it to the client
     return product_schema.jsonify(product)
 
@@ -143,6 +146,22 @@ def update_product(id):
     # we now commit the changes
     db.session.commit()
 
+    return product_schema.jsonify(product)
+
+
+@app.route("/product/<id>", methods=["DELETE"])
+def delete_product(id):
+    # get the specific product id from the database
+    product = Product.query.get(id)
+    print(product)
+
+    # use the delete method to delete that product
+    db.session.delete(product)
+
+    # commit the changes(! important)
+    db.session.commit()
+
+    # return the product that was just deleted
     return product_schema.jsonify(product)
 
 
