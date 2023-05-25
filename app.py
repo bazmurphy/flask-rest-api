@@ -93,10 +93,23 @@ def add_product():
 # example post request:
 # {
 #     "name": "Product 1",
-#     "description": "This product one",
+#     "description": "This is product one",
 #     "price": 10.00,
 #     "quantity": 1
 # }
+
+
+@app.route("/product", methods=["GET"])
+def get_products():
+    # set this to our Class/Model which has a method on it called "query" and then get "all" (this saves us writing raw SQL)
+    all_products = Product.query.all()
+    print(all_products)
+    # use the products_schema and that has a method on it called "dump" and we want to dump "all" products
+    result = products_schema.dump(all_products)
+    print(result)
+    # the result is a dictionary that holds the list of products, we jsonify it and return it the client
+    return jsonify(result)
+
 
 # Run the Server
 # check to see if this is the main file
