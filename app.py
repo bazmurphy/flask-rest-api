@@ -104,11 +104,22 @@ def get_products():
     # set this to our Class/Model which has a method on it called "query" and then get "all" (this saves us writing raw SQL)
     all_products = Product.query.all()
     print(all_products)
-    # use the products_schema and that has a method on it called "dump" and we want to dump "all" products
+    # use the products_schema (plural) and that has a method on it called "dump" and we want to dump "all" products
     result = products_schema.dump(all_products)
     print(result)
     # the result is a dictionary that holds the list of products, we jsonify it and return it the client
     return jsonify(result)
+
+
+@app.route("/product/<id>", methods=["GET"])
+# <id> is the format of a query parameter
+# you have to pass the query parameter into the function as a parameter
+def get_product(id):
+    # we run a query on the specific product with that id
+    product = Product.query.get(id)
+    print(product)
+    # use the product_schema (singular) and jsonify the product and return it to the client
+    return product_schema.jsonify(product)
 
 
 # Run the Server
